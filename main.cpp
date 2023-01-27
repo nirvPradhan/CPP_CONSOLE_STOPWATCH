@@ -10,16 +10,34 @@
 
 #include "Stopwatch.h"
 
+// HANDLE KEYBOARD INPUT
+
+// main function
 int main()
 {
-	Stopwatch stopwatch(SECONDS + 12);
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO cursorInfo;
+
+	GetConsoleCursorInfo(hConsole, &cursorInfo);
+	cursorInfo.bVisible = false; // set the cursor visibility
+	SetConsoleCursorInfo(hConsole, &cursorInfo);
+
+	Stopwatch stopwatch(SECONDS);
+
+	printf("\x1b[2J");
 	for (;;) {
 		// end program if user presses q.
 		if(GetKeyState('Q') & 0x8000)
 			break;
 
-		// if the smallest period has elapsed print current time.
+		// if the smallest period has elapsed print current time.q
 		if (stopwatch.elapsed())
+			printf("\x1b[2J");
+			printf("\x1b[H");
+			
+			// Help messsage with controls
+			std::cout << "Stopwatch Diary:\n\t\- Press Q to quit.\n" << std::endl;
+			
 			stopwatch.print();
 	}
 
